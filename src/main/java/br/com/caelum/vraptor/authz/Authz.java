@@ -28,11 +28,14 @@ public class Authz implements Interceptor {
 	@Override
 	public void intercept(InterceptorStack stack, ResourceMethod method,
 			Object resourceInstance) throws InterceptionException {
-		Set<Role> roles = authInfo.getAuthorizable().roles();
-		for (Role role : roles) {
-			if (authorizator.isAllowed(role, method)) {
-				stack.next(method, resourceInstance);
-				return;
+		Authorizable authorizable = authInfo.getAuthorizable();
+		if (authorizable != null) {
+			Set<Role> roles = authorizable.roles();
+			for (Role role : roles) {
+				if (authorizator.isAllowed(role, method)) {
+					stack.next(method, resourceInstance);
+					return;
+				}
 			}
 		}
 		authInfo.handleAuthError(result);
