@@ -2,6 +2,9 @@ package br.com.caelum.vraptor.authz;
 
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import br.com.caelum.vraptor.InterceptionException;
 import br.com.caelum.vraptor.Intercepts;
 import br.com.caelum.vraptor.Result;
@@ -15,6 +18,7 @@ import br.com.caelum.vraptor.resource.ResourceMethod;
 @RequestScoped
 public class Authz implements Interceptor {
 
+	private static final Logger log = LoggerFactory.getLogger(Authz.class);
 	private final AuthzInfo authInfo;
 	private final Authorizator authorizator;
 	private final Result result;
@@ -28,17 +32,22 @@ public class Authz implements Interceptor {
 	@Override
 	public void intercept(InterceptorStack stack, ResourceMethod method,
 			Object resourceInstance) throws InterceptionException {
-		Authorizable authorizable = authInfo.getAuthorizable();
-		if (authorizable != null) {
-			Set<Role> roles = authorizable.roles();
-			for (Role role : roles) {
-				if (authorizator.isAllowed(role, method)) {
-					stack.next(method, resourceInstance);
-					return;
+		if (authInfo != null) {
+			Authorizable authorizable = authInfo.getAuthorizable();
+			if (authorizable != null) {
+				Set<Role> roles = authorizable.roles();
+				for (Role role : roles) {
+					if (authorizator.isAllowed(role, method)) {
+						stack.next(method, resourceInstance);
+						return;
+					}
 				}
 			}
+			authInfo.handleAuthError(result);
+		} else {
+			log.error("no AuthInfo found!");
+			throw new IllegalStateException("No AuthInfo found");
 		}
-		authInfo.handleAuthError(result);
 	}
 
 	@Override
