@@ -14,6 +14,7 @@ import org.mockito.MockitoAnnotations;
 import br.com.caelum.vraptor.Result;
 import br.com.caelum.vraptor.authz.annotation.AuthzBypass;
 import br.com.caelum.vraptor.core.InterceptorStack;
+import br.com.caelum.vraptor.resource.ResourceClass;
 import br.com.caelum.vraptor.resource.ResourceMethod;
 
 public class AuthzTest {
@@ -49,15 +50,17 @@ public class AuthzTest {
 	private Set<Role> allRoles;
 	private Set<Role> noRoles;
 
+	@Mock
+	private ResourceClass resource;
+
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
 
 		interceptor = new Authz(authorizator, authInfo, result);
-		Mockito.when(authorizator.isAllowed(admin, resourceMethod)).thenReturn(
-				true);
-		Mockito.when(authorizator.isAllowed(user, resourceMethod)).thenReturn(
-				false);
+		Mockito.when(authorizator.isAllowed(admin, resourceMethod)).thenReturn(true);
+		Mockito.when(authorizator.isAllowed(user, resourceMethod)).thenReturn(false);
+		Mockito.when(bypassedResourceMethod.getResource()).thenReturn(resource);
 		allRoles = new HashSet<Role>(Arrays.asList(admin, user));
 		noRoles = new HashSet<Role>();
 	}
@@ -83,6 +86,7 @@ public class AuthzTest {
 	@Test
 	public void shouldBypassAuthzIfAnnotatedWithBypass() throws SecurityException, NoSuchMethodException {
 		Mockito.when(bypassedResourceMethod.getMethod()).thenReturn(FakeResource.class.getMethod("doIt"));
+		Mockito.when(resource.getType()).thenReturn(FakeResource.class);
 		Assert.assertFalse(interceptor.accepts(bypassedResourceMethod));
 		Mockito.when(resourceMethod.getMethod()).thenReturn(FakeResource.class.getMethod("dontDoIt"));
 		Assert.assertTrue(interceptor.accepts(resourceMethod));
@@ -95,6 +99,22 @@ public class AuthzTest {
 		}
 
 		public void dontDoIt() {
+
+		}
+	}
+
+	@Test
+	public void shouldBypassAuthzIfTypeIsAnnotatedWithBypass() throws SecurityException, NoSuchMethodException {
+		Mockito.when(bypassedResourceMethod.getMethod()).thenReturn(CreativeCommonsResource.class.getMethod("modifyMe"));
+		Mockito.when(resource.getType()).thenReturn(CreativeCommonsResource.class);
+		Assert.assertFalse(interceptor.accepts(bypassedResourceMethod));
+		Mockito.when(resourceMethod.getMethod()).thenReturn(FakeResource.class.getMethod("dontDoIt"));
+		Assert.assertTrue(interceptor.accepts(resourceMethod));
+	}
+
+	@AuthzBypass
+	static class CreativeCommonsResource {
+		public void modifyMe() {
 
 		}
 	}

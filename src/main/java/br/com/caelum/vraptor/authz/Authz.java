@@ -60,7 +60,7 @@ public class Authz implements Interceptor {
 
 	@Override
 	public boolean accepts(ResourceMethod method) {
-		if (method.getMethod().isAnnotationPresent(AuthzBypass.class)) {
+		if (method.getMethod().isAnnotationPresent(AuthzBypass.class) || method.getResource().getType().isAnnotationPresent(AuthzBypass.class)) {
 			return false;
 		}
 		return true;
