@@ -1,6 +1,7 @@
 package br.com.caelum.vraptor.authz;
 
 import java.util.EnumSet;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,10 +55,10 @@ public class Authz implements Interceptor {
 	}
 
 	private boolean isAllowed(ResourceMethod method, Authorizable authorizable) {
-		String urlFor = router.urlFor(method.getResource().getType(), method.getMethod());
-		EnumSet<HttpMethod> httpMethods = router.allowedMethodsFor(urlFor);
+		String url = router.urlFor(method.getResource().getType(), method.getMethod());
+		EnumSet<HttpMethod> httpMethods = router.allowedMethodsFor(url);
 		for (Role role : authorizable.roles()) {
-			if (authorizator.isAllowed(role, urlFor, httpMethods)) {
+			if (authorizator.isAllowed(role, url, httpMethods)) {
 				return true;
 			}
 		}
