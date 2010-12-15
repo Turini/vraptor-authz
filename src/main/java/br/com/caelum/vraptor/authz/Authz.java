@@ -10,11 +10,11 @@ import br.com.caelum.vraptor.resource.ResourceMethod;
 
 public class Authz implements Interceptor {
 
-	private final AuthInfo authInfo;
+	private final AuthzInfo authInfo;
 	private final Authorizator authorizator;
 	private final Result result;
 
-	public Authz(Authorizator authorizator, AuthInfo authInfo, Result result) {
+	public Authz(Authorizator authorizator, AuthzInfo authInfo, Result result) {
 		this.authorizator = authorizator;
 		this.authInfo = authInfo;
 		this.result = result;

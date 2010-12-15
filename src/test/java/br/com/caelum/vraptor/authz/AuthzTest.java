@@ -32,7 +32,7 @@ public class AuthzTest {
 	private Authorizable authorizable;
 
 	@Mock
-	private AuthInfo authInfo;
+	private AuthzInfo authInfo;
 
 	@Mock
 	private Role admin;
