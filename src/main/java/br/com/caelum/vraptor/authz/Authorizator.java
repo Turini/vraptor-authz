@@ -1,9 +1,11 @@
 package br.com.caelum.vraptor.authz;
 
-import br.com.caelum.vraptor.resource.ResourceMethod;
+import java.util.EnumSet;
+
+import br.com.caelum.vraptor.resource.HttpMethod;
 
 public interface Authorizator {
 	
-	public boolean isAllowed(Role role, ResourceMethod method);
+	public boolean isAllowed(Role role, String urlFor, EnumSet<HttpMethod> httpMethods);
 
 }

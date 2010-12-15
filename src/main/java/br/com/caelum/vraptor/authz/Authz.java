@@ -1,16 +1,19 @@
 package br.com.caelum.vraptor.authz;
 
-import java.util.Set;
+import java.util.EnumSet;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import br.com.caelum.vraptor.InterceptionException;
 import br.com.caelum.vraptor.Intercepts;
 import br.com.caelum.vraptor.Result;
 import br.com.caelum.vraptor.authz.annotation.AuthzBypass;
 import br.com.caelum.vraptor.core.InterceptorStack;
+import br.com.caelum.vraptor.http.route.Router;
 import br.com.caelum.vraptor.interceptor.Interceptor;
 import br.com.caelum.vraptor.ioc.RequestScoped;
+import br.com.caelum.vraptor.resource.HttpMethod;
 import br.com.caelum.vraptor.resource.ResourceMethod;
 
 /**
@@ -28,11 +31,13 @@ public class Authz implements Interceptor {
 	private final AuthzInfo authInfo;
 	private final Authorizator authorizator;
 	private final Result result;
+	private final Router router;
 
-	public Authz(Authorizator authorizator, AuthzInfo authInfo, Result result) {
+	public Authz(Authorizator authorizator, AuthzInfo authInfo, Result result, Router router) {
 		this.authorizator = authorizator;
 		this.authInfo = authInfo;
 		this.result = result;
+		this.router = router;
 	}
 
 	@Override
@@ -50,8 +55,10 @@ public class Authz implements Interceptor {
 	}
 
 	private boolean isAllowed(ResourceMethod method, Authorizable authorizable) {
+		String urlFor = router.urlFor(method.getResource().getType(), method.getMethod());
+		EnumSet<HttpMethod> httpMethods = router.allowedMethodsFor(urlFor);
 		for (Role role : authorizable.roles()) {
-			if (authorizator.isAllowed(role, method)) {
+			if (authorizator.isAllowed(role, urlFor, httpMethods)) {
 				return true;
 			}
 		}
