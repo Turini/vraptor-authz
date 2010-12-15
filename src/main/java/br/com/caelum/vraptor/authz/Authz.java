@@ -1,7 +1,5 @@
 package br.com.caelum.vraptor.authz;
 
-import java.util.Set;
-
 import br.com.caelum.vraptor.InterceptionException;
 import br.com.caelum.vraptor.Intercepts;
 import br.com.caelum.vraptor.Result;
@@ -11,6 +9,13 @@ import br.com.caelum.vraptor.interceptor.Interceptor;
 import br.com.caelum.vraptor.ioc.RequestScoped;
 import br.com.caelum.vraptor.resource.ResourceMethod;
 
+/**
+ * Default authorization interceptor implementation. Check for situations on the
+ * test cases.
+ * 
+ * @author douglas campos
+ * @author guilherme silveira
+ */
 @Intercepts
 @RequestScoped
 public class Authz implements Interceptor {
@@ -29,16 +34,20 @@ public class Authz implements Interceptor {
 	public void intercept(InterceptorStack stack, ResourceMethod method,
 			Object resourceInstance) throws InterceptionException {
 		Authorizable authorizable = authInfo.getAuthorizable();
-		if (authorizable != null) {
-			Set<Role> roles = authorizable.roles();
-			for (Role role : roles) {
-				if (authorizator.isAllowed(role, method)) {
-					stack.next(method, resourceInstance);
-					return;
-				}
-			}
+		if (authorizable != null && isAllowed(method, authorizable)) {
+			stack.next(method, resourceInstance);
+			return;
 		}
 		authInfo.handleAuthError(result);
+	}
+
+	private boolean isAllowed(ResourceMethod method, Authorizable authorizable) {
+		for (Role role : authorizable.roles()) {
+			if (authorizator.isAllowed(role, method)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@Override
