@@ -39,17 +39,10 @@ public class Authz implements Interceptor {
 	public void intercept(InterceptorStack stack, ResourceMethod method,
 			Object resourceInstance) throws InterceptionException {
 		Authorizable authorizable = authInfo.getAuthorizable();
-		if (authorizable != null) {
-			authorize(stack, method, resourceInstance, authorizable);
-		} else {
+		if (authorizable == null) {
 			log.error("no AuthInfo found!");
 			throw new IllegalStateException("No AuthInfo found");
-		}
-	}
-
-	private void authorize(InterceptorStack stack, ResourceMethod method,
-			Object resourceInstance, Authorizable authorizable) {
-		if (isAllowed(method, authorizable)) {
+		} else if (isAllowed(method, authorizable)) {
 			stack.next(method, resourceInstance);
 		} else {
 			authInfo.handleAuthError(result);
