@@ -2,6 +2,8 @@ package br.com.caelum.vraptor.authz;
 
 import java.util.EnumSet;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,12 +34,14 @@ public class Authz implements Interceptor {
 	private final Authorizator authorizator;
 	private final Result result;
 	private final Router router;
+	private final HttpServletRequest request;
 
-	public Authz(Authorizator authorizator, AuthzInfo authInfo, Result result, Router router) {
+	public Authz(Authorizator authorizator, AuthzInfo authInfo, Result result, Router router, HttpServletRequest request) {
 		this.authorizator = authorizator;
 		this.authInfo = authInfo;
 		this.result = result;
 		this.router = router;
+		this.request = request;
 	}
 
 	@Override
@@ -46,23 +50,28 @@ public class Authz implements Interceptor {
 		if (authorizable == null) {
 			log.error("no AuthInfo found!");
 			throw new IllegalStateException("No AuthInfo found");
-		} else if (isAllowed(method, authorizable)) {
+		} else if (isAllowed(authorizable)) {
 			stack.next(method, resourceInstance);
 		} else {
 			authInfo.handleAuthError(result);
 		}
 	}
 
-	private boolean isAllowed(ResourceMethod method, Authorizable authorizable) {
-		Object[] parametersPlaceholder = new Object[method.getMethod().getParameterTypes().length];
-		String url = router.urlFor(method.getResource().getType(), method.getMethod(), parametersPlaceholder);
-		EnumSet<HttpMethod> httpMethods = router.allowedMethodsFor(url);
+	private boolean isAllowed(Authorizable authorizable) {
+		String currentURL = getCurrentURL();
+		EnumSet<HttpMethod> httpMethods = router.allowedMethodsFor(currentURL);
 		for (Role role : authorizable.roles()) {
-			if (authorizator.isAllowed(role, url, httpMethods)) {
+			if (authorizator.isAllowed(role, currentURL, httpMethods)) {
 				return true;
 			}
 		}
 		return false;
+	}
+
+	private String getCurrentURL() {
+		String requestURI = request.getRequestURI();
+		String contextPath = request.getContextPath();
+		return requestURI.replaceFirst(contextPath, "");
 	}
 
 	@Override

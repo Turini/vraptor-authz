@@ -6,6 +6,8 @@ import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -57,14 +59,18 @@ public class AuthzTest {
 	private Set<Role> allRoles;
 	private Set<Role> noRoles;
 
+	@Mock
+	private HttpServletRequest request;
+
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-
+		Mockito.when(request.getRequestURI()).thenReturn("/mycontext/mytest");
+		Mockito.when(request.getContextPath()).thenReturn("/mycontext");
 		Mockito.when(router.allowedMethodsFor(Mockito.any(String.class))).thenReturn(EnumSet.of(HttpMethod.GET));
-		interceptor = new Authz(authorizator, authInfo, result, router);
-		Mockito.when(authorizator.isAllowed(admin, "/", EnumSet.of(HttpMethod.GET))).thenReturn(true);
-		Mockito.when(authorizator.isAllowed(user, "/", EnumSet.of(HttpMethod.GET))).thenReturn(false);
+		interceptor = new Authz(authorizator, authInfo, result, router, request);
+		Mockito.when(authorizator.isAllowed(admin, "/mytest", EnumSet.of(HttpMethod.GET))).thenReturn(true);
+		Mockito.when(authorizator.isAllowed(user, "/mytest", EnumSet.of(HttpMethod.GET))).thenReturn(false);
 		allRoles = new HashSet<Role>(Arrays.asList(admin, user));
 		noRoles = new HashSet<Role>();
 	}
@@ -82,12 +88,10 @@ public class AuthzTest {
 		Mockito.verify(authInfo).handleAuthError(result);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
 	public void shoudAllowAccessWithAdminRole() throws SecurityException, NoSuchMethodException {
 		Mockito.when(resourceMethod.getResource()).thenReturn(new DefaultResourceClass(FakeResource.class));
 		Mockito.when(resourceMethod.getMethod()).thenReturn(FakeResource.class.getMethod("doIt"));
-		Mockito.when(router.urlFor(Mockito.any(Class.class), Mockito.any(Method.class))).thenReturn("/");
 		Mockito.when(authorizable.roles()).thenReturn(allRoles);
 		Mockito.when(authInfo.getAuthorizable()).thenReturn(authorizable);
 		interceptor.intercept(stack, resourceMethod, null);
