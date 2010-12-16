@@ -41,8 +41,7 @@ public class Authz implements Interceptor {
 	}
 
 	@Override
-	public void intercept(InterceptorStack stack, ResourceMethod method,
-			Object resourceInstance) throws InterceptionException {
+	public void intercept(InterceptorStack stack, ResourceMethod method, Object resourceInstance) throws InterceptionException {
 		Authorizable authorizable = authInfo.getAuthorizable();
 		if (authorizable == null) {
 			log.error("no AuthInfo found!");
@@ -55,7 +54,8 @@ public class Authz implements Interceptor {
 	}
 
 	private boolean isAllowed(ResourceMethod method, Authorizable authorizable) {
-		String url = router.urlFor(method.getResource().getType(), method.getMethod());
+		Object[] parametersPlaceholder = new Object[method.getMethod().getParameterTypes().length];
+		String url = router.urlFor(method.getResource().getType(), method.getMethod(), parametersPlaceholder);
 		EnumSet<HttpMethod> httpMethods = router.allowedMethodsFor(url);
 		for (Role role : authorizable.roles()) {
 			if (authorizator.isAllowed(role, url, httpMethods)) {

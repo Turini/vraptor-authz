@@ -61,27 +61,20 @@ public class AuthzTest {
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
 
-		Mockito.when(router.allowedMethodsFor(Mockito.any(String.class)))
-				.thenReturn(EnumSet.of(HttpMethod.GET));
+		Mockito.when(router.allowedMethodsFor(Mockito.any(String.class))).thenReturn(EnumSet.of(HttpMethod.GET));
 		interceptor = new Authz(authorizator, authInfo, result, router);
-		Mockito.when(
-				authorizator.isAllowed(admin, "/", EnumSet.of(HttpMethod.GET)))
-				.thenReturn(true);
-		Mockito.when(
-				authorizator.isAllowed(user, "/", EnumSet.of(HttpMethod.GET)))
-				.thenReturn(false);
+		Mockito.when(authorizator.isAllowed(admin, "/", EnumSet.of(HttpMethod.GET))).thenReturn(true);
+		Mockito.when(authorizator.isAllowed(user, "/", EnumSet.of(HttpMethod.GET))).thenReturn(false);
 		allRoles = new HashSet<Role>(Arrays.asList(admin, user));
 		noRoles = new HashSet<Role>();
 	}
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void shouldNotAllowAccessWithoutRoles() {
-		Mockito.when(resourceMethod.getResource()).thenReturn(
-				new DefaultResourceClass(FakeResource.class));
-		Mockito.when(
-				router.urlFor(Mockito.any(Class.class),
-						Mockito.any(Method.class))).thenReturn("/");
+	public void shouldNotAllowAccessWithoutRoles() throws SecurityException, NoSuchMethodException {
+		Mockito.when(resourceMethod.getResource()).thenReturn(new DefaultResourceClass(FakeResource.class));
+		Mockito.when(resourceMethod.getMethod()).thenReturn(FakeResource.class.getMethod("doIt"));
+		Mockito.when(router.urlFor(Mockito.any(Class.class), Mockito.any(Method.class))).thenReturn("/");
 		Mockito.when(authorizable.roles()).thenReturn(noRoles);
 		Mockito.when(authInfo.getAuthorizable()).thenReturn(authorizable);
 		interceptor.intercept(stack, resourceMethod, null);
@@ -91,12 +84,10 @@ public class AuthzTest {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void shoudAllowAccessWithAdminRole() {
-		Mockito.when(resourceMethod.getResource()).thenReturn(
-				new DefaultResourceClass(FakeResource.class));
-		Mockito.when(
-				router.urlFor(Mockito.any(Class.class),
-						Mockito.any(Method.class))).thenReturn("/");
+	public void shoudAllowAccessWithAdminRole() throws SecurityException, NoSuchMethodException {
+		Mockito.when(resourceMethod.getResource()).thenReturn(new DefaultResourceClass(FakeResource.class));
+		Mockito.when(resourceMethod.getMethod()).thenReturn(FakeResource.class.getMethod("doIt"));
+		Mockito.when(router.urlFor(Mockito.any(Class.class), Mockito.any(Method.class))).thenReturn("/");
 		Mockito.when(authorizable.roles()).thenReturn(allRoles);
 		Mockito.when(authInfo.getAuthorizable()).thenReturn(authorizable);
 		interceptor.intercept(stack, resourceMethod, null);
@@ -105,17 +96,12 @@ public class AuthzTest {
 	}
 
 	@Test
-	public void shouldBypassAuthzIfAnnotatedWithBypass()
-			throws SecurityException, NoSuchMethodException {
-		Mockito.when(bypassedResourceMethod.getMethod()).thenReturn(
-				FakeResource.class.getMethod("doIt"));
-		Mockito.when(bypassedResourceMethod.getResource()).thenReturn(
-				new DefaultResourceClass(FakeResource.class));
+	public void shouldBypassAuthzIfAnnotatedWithBypass() throws SecurityException, NoSuchMethodException {
+		Mockito.when(bypassedResourceMethod.getMethod()).thenReturn(FakeResource.class.getMethod("doIt"));
+		Mockito.when(bypassedResourceMethod.getResource()).thenReturn(new DefaultResourceClass(FakeResource.class));
 		Assert.assertFalse(interceptor.accepts(bypassedResourceMethod));
-		Mockito.when(resourceMethod.getResource()).thenReturn(
-				new DefaultResourceClass(FakeResource.class));
-		Mockito.when(resourceMethod.getMethod()).thenReturn(
-				FakeResource.class.getMethod("dontDoIt"));
+		Mockito.when(resourceMethod.getResource()).thenReturn(new DefaultResourceClass(FakeResource.class));
+		Mockito.when(resourceMethod.getMethod()).thenReturn(FakeResource.class.getMethod("dontDoIt"));
 		Assert.assertTrue(interceptor.accepts(resourceMethod));
 	}
 
@@ -131,12 +117,9 @@ public class AuthzTest {
 	}
 
 	@Test
-	public void shouldBypassAuthzIfTypeIsAnnotatedWithBypass()
-			throws SecurityException, NoSuchMethodException {
-		Mockito.when(bypassedResourceMethod.getMethod()).thenReturn(
-				CreativeCommonsResource.class.getMethod("modifyMe"));
-		Mockito.when(bypassedResourceMethod.getResource()).thenReturn(
-				new DefaultResourceClass(CreativeCommonsResource.class));
+	public void shouldBypassAuthzIfTypeIsAnnotatedWithBypass() throws SecurityException, NoSuchMethodException {
+		Mockito.when(bypassedResourceMethod.getMethod()).thenReturn(CreativeCommonsResource.class.getMethod("modifyMe"));
+		Mockito.when(bypassedResourceMethod.getResource()).thenReturn(new DefaultResourceClass(CreativeCommonsResource.class));
 		Assert.assertFalse(interceptor.accepts(bypassedResourceMethod));
 	}
 
@@ -154,7 +137,7 @@ public class AuthzTest {
 		Assert.assertFalse(interceptor.accepts(bypassedResourceMethod));
 	}
 
-	static class MyPhoto extends CreativeCommonsResource{
+	static class MyPhoto extends CreativeCommonsResource {
 		public void newWork() {
 		}
 	}
