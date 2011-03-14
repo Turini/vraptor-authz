@@ -6,6 +6,7 @@ import br.com.caelum.vraptor.resource.HttpMethod;
 
 public interface Authorizator {
 	
-	public boolean isAllowed(Role role, String url, EnumSet<HttpMethod> httpMethods);
+	public boolean isAllowed(Role role, String url,
+			EnumSet<HttpMethod> httpMethods);
 
 }

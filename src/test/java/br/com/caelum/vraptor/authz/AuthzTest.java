@@ -73,6 +73,7 @@ public class AuthzTest {
 		Mockito.when(authorizator.isAllowed(user, "/mytest", EnumSet.of(HttpMethod.GET))).thenReturn(false);
 		allRoles = new HashSet<Role>(Arrays.asList(admin, user));
 		noRoles = new HashSet<Role>();
+		Mockito.when(request.getMethod()).thenReturn(HttpMethod.GET.name());
 	}
 
 	@SuppressWarnings("unchecked")
