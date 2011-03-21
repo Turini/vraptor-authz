@@ -59,8 +59,6 @@ public class Authz implements Interceptor {
 
 	private boolean isAllowed(Authorizable authorizable) {
 		String currentURL = getCurrentURL();
-		// EnumSet<HttpMethod> httpMethods =
-		// router.allowedMethodsFor(currentURL);
 		String method = request.getMethod();
 		HttpMethod httpMethod = HttpMethod.valueOf(method);
 		EnumSet<HttpMethod> httpMethods = EnumSet.of(httpMethod);

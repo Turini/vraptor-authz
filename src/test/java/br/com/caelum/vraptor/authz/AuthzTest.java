@@ -75,12 +75,12 @@ public class AuthzTest {
 		when(authorizator.isAllowed(user, "/mytest", EnumSet.of(HttpMethod.GET))).thenReturn(false);
 		allRoles = new HashSet<Role>(Arrays.asList(admin, user));
 		noRoles = new HashSet<Role>();
-		when(request.getMethod()).thenReturn(HttpMethod.GET.name());
 	}
 
 	@SuppressWarnings("unchecked")
 	@Test
 	public void shouldNotAllowAccessWithoutRoles() throws SecurityException, NoSuchMethodException {
+		when(request.getMethod()).thenReturn(HttpMethod.GET.name());
 		when(resourceMethod.getResource()).thenReturn(new DefaultResourceClass(FakeResource.class));
 		when(resourceMethod.getMethod()).thenReturn(FakeResource.class.getMethod("doIt"));
 		when(router.urlFor(any(Class.class), any(Method.class))).thenReturn("/");
@@ -93,6 +93,7 @@ public class AuthzTest {
 
 	@Test
 	public void shoudAllowAccessWithAdminRole() throws SecurityException, NoSuchMethodException {
+		when(request.getMethod()).thenReturn(HttpMethod.GET.name());
 		when(resourceMethod.getResource()).thenReturn(new DefaultResourceClass(FakeResource.class));
 		when(resourceMethod.getMethod()).thenReturn(FakeResource.class.getMethod("doIt"));
 		when(authorizable.roles()).thenReturn(allRoles);
@@ -100,6 +101,18 @@ public class AuthzTest {
 		interceptor.intercept(stack, resourceMethod, null);
 		verify(stack).next(resourceMethod, null);
 		verify(authInfo, never()).handleAuthError(result);
+	}
+
+	@Test
+	public void shouldDenyAccessWithWrongMethod() throws SecurityException, NoSuchMethodException {
+		when(request.getMethod()).thenReturn(HttpMethod.POST.name());
+		when(resourceMethod.getResource()).thenReturn(new DefaultResourceClass(FakeResource.class));
+		when(resourceMethod.getMethod()).thenReturn(FakeResource.class.getMethod("doIt"));
+		when(authorizable.roles()).thenReturn(allRoles);
+		when(authInfo.getAuthorizable()).thenReturn(authorizable);
+		interceptor.intercept(stack, resourceMethod, null);
+		verifyZeroInteractions(stack);
+		verify(authInfo).handleAuthError(result);
 	}
 
 	@Test
