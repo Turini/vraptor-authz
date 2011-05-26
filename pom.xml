@@ -9,6 +9,7 @@
     <packaging>jar</packaging>
 
     <name>vraptor-authz</name>
+    <description>VRaptor authorization plugin</description>
     <url>https://github.com/qmx/vraptor-authz</url>
 
     <properties>
