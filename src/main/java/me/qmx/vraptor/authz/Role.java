@@ -1,4 +1,4 @@
-package br.com.caelum.vraptor.authz;
+package me.qmx.vraptor.authz;
 
 public interface Role {
 	public String getName();

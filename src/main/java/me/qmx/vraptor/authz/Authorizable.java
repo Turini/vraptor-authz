@@ -1,4 +1,4 @@
-package br.com.caelum.vraptor.authz;
+package me.qmx.vraptor.authz;
 
 import java.util.Set;
 

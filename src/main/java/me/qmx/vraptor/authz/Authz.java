@@ -1,4 +1,4 @@
-package br.com.caelum.vraptor.authz;
+package me.qmx.vraptor.authz;
 
 import java.util.EnumSet;
 
@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import br.com.caelum.vraptor.InterceptionException;
 import br.com.caelum.vraptor.Intercepts;
 import br.com.caelum.vraptor.Result;
-import br.com.caelum.vraptor.authz.annotation.AuthzBypass;
+import me.qmx.vraptor.authz.annotation.AuthzBypass;
 import br.com.caelum.vraptor.core.InterceptorStack;
 import br.com.caelum.vraptor.http.route.Router;
 import br.com.caelum.vraptor.interceptor.Interceptor;
