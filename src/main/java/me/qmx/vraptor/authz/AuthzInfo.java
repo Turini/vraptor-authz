@@ -1,4 +1,4 @@
-package br.com.caelum.vraptor.authz;
+package me.qmx.vraptor.authz;
 
 import br.com.caelum.vraptor.Result;
 

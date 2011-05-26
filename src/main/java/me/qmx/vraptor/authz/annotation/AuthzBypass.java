@@ -1,4 +1,4 @@
-package br.com.caelum.vraptor.authz.annotation;
+package me.qmx.vraptor.authz.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
