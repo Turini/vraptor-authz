@@ -36,6 +36,18 @@
         <url>git@github.com:qmx/vraptor-authz.git</url>
     </scm>
 
+    <developers>
+        <developer>
+            <id>qmx</id>
+            <name>Douglas Campos</name>
+            <url>http://github.com/qmx</url>
+            <email>qmx@qmx.me</email>
+            <roles>
+                <role>Software Developer</role>
+            </roles>
+        </developer>
+    </developers>
+
     <dependencies>
         <dependency>
             <groupId>br.com.caelum</groupId>
