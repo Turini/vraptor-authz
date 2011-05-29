@@ -52,7 +52,7 @@
         <dependency>
             <groupId>br.com.caelum</groupId>
             <artifactId>vraptor</artifactId>
-            <version>3.2.0</version>
+            <version>3.3.1</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
