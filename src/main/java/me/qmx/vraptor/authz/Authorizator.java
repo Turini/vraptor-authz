@@ -15,13 +15,12 @@
  */
 package me.qmx.vraptor.authz;
 
-import java.util.EnumSet;
+import java.util.Set;
 
-import br.com.caelum.vraptor.resource.HttpMethod;
+import br.com.caelum.vraptor.controller.HttpMethod;
 
 public interface Authorizator {
-	
-	public boolean isAllowed(Role role, String url,
-			EnumSet<HttpMethod> httpMethods);
+
+	boolean isAllowed(Role role, String url, Set<HttpMethod> httpMethods);
 
 }

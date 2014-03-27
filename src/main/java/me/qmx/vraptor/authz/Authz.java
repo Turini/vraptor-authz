@@ -16,22 +16,25 @@
 package me.qmx.vraptor.authz;
 
 import java.util.EnumSet;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import br.com.caelum.vraptor.InterceptionException;
+import br.com.caelum.vraptor.Accepts;
+import br.com.caelum.vraptor.AroundCall;
 import br.com.caelum.vraptor.Intercepts;
 import br.com.caelum.vraptor.Result;
 import me.qmx.vraptor.authz.annotation.AuthzBypass;
-import br.com.caelum.vraptor.core.InterceptorStack;
-import br.com.caelum.vraptor.http.route.Router;
-import br.com.caelum.vraptor.interceptor.Interceptor;
-import br.com.caelum.vraptor.ioc.RequestScoped;
-import br.com.caelum.vraptor.resource.HttpMethod;
-import br.com.caelum.vraptor.resource.ResourceMethod;
+import br.com.caelum.vraptor.interceptor.SimpleInterceptorStack;
+
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+
+import br.com.caelum.vraptor.controller.HttpMethod;
+import br.com.caelum.vraptor.controller.ControllerMethod;
 
 /**
  * Default authorization interceptor implementation. Check for situations on the
@@ -42,31 +45,40 @@ import br.com.caelum.vraptor.resource.ResourceMethod;
  */
 @Intercepts
 @RequestScoped
-public class Authz implements Interceptor {
+public class Authz {
+	private static final Logger LOGGER = LoggerFactory.getLogger(Authz.class);
 
-	private static final Logger log = LoggerFactory.getLogger(Authz.class);
-	private final AuthzInfo authInfo;
-	private final Authorizator authorizator;
-	private final Result result;
-	private final Router router;
-	private final HttpServletRequest request;
+	private Authorizator authorizator;
+	private AuthzInfo authInfo;
+	private Result result;
+	private HttpServletRequest request;
 
-	public Authz(Authorizator authorizator, AuthzInfo authInfo, Result result, Router router, HttpServletRequest request) {
+	// CDI EYES ONLY
+	protected Authz() {
+
+	}
+
+	@Inject
+	public Authz(Authorizator authorizator, AuthzInfo authInfo, Result result, HttpServletRequest request) {
 		this.authorizator = authorizator;
 		this.authInfo = authInfo;
 		this.result = result;
-		this.router = router;
 		this.request = request;
 	}
 
-	@Override
-	public void intercept(InterceptorStack stack, ResourceMethod method, Object resourceInstance) throws InterceptionException {
+	@Accepts
+	public boolean accepts(ControllerMethod method) {
+		return !(method.getMethod().isAnnotationPresent(AuthzBypass.class) || isAnnotationPresent(method.getController().getType()));
+	}
+
+	@AroundCall
+	public void intercept(SimpleInterceptorStack stack) {
 		Authorizable authorizable = authInfo.getAuthorizable();
 		if (authorizable == null) {
-			log.error("no AuthInfo found!");
+			LOGGER.error("no AuthInfo found!");
 			throw new IllegalStateException("No AuthInfo found");
 		} else if (isAllowed(authorizable)) {
-			stack.next(method, resourceInstance);
+			stack.next();
 		} else {
 			authInfo.handleAuthError(result);
 		}
@@ -76,7 +88,7 @@ public class Authz implements Interceptor {
 		String currentURL = getCurrentURL();
 		String method = request.getMethod();
 		HttpMethod httpMethod = HttpMethod.valueOf(method);
-		EnumSet<HttpMethod> httpMethods = EnumSet.of(httpMethod);
+		Set<HttpMethod> httpMethods = EnumSet.of(httpMethod);
 		for (Role role : authorizable.roles()) {
 			if (authorizator.isAllowed(role, currentURL, httpMethods)) {
 				return true;
@@ -91,16 +103,7 @@ public class Authz implements Interceptor {
 		return requestURI.replaceFirst(contextPath, "");
 	}
 
-	@Override
-	public boolean accepts(ResourceMethod method) {
-		if (method.getMethod().isAnnotationPresent(AuthzBypass.class) || isAnnotationPresent(method.getResource().getType())) {
-			return false;
-		}
-		return true;
-	}
-
 	private boolean isAnnotationPresent(Class<?> type) {
 		return type.isAnnotationPresent(AuthzBypass.class) || (!type.equals(Object.class) && isAnnotationPresent(type.getSuperclass()));
 	}
-
 }
