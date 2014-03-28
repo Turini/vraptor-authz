@@ -56,6 +56,7 @@ public class Authz {
 	/**
 	 * @deprecated cdi eyes only
 	 */
+	@Deprecated
 	protected Authz() {
 
 	}
