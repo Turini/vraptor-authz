@@ -15,6 +15,8 @@
  */
 package me.qmx.vraptor.authz;
 
-public interface Role {
-	public String getName();
+import java.io.Serializable;
+
+public interface Role extends Serializable {
+	String getName();
 }

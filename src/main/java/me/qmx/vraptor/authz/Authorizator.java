@@ -15,11 +15,12 @@
  */
 package me.qmx.vraptor.authz;
 
+import java.io.Serializable;
 import java.util.Set;
 
 import br.com.caelum.vraptor.controller.HttpMethod;
 
-public interface Authorizator {
+public interface Authorizator extends Serializable {
 
 	boolean isAllowed(Role role, String url, Set<HttpMethod> httpMethods);
 

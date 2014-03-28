@@ -15,6 +15,7 @@
  */
 package me.qmx.vraptor.authz;
 
+import java.io.Serializable;
 import java.util.Set;
 
 /**
@@ -22,7 +23,7 @@ import java.util.Set;
  * 
  * @author douglas campos
  */
-public interface Authorizable {
+public interface Authorizable extends Serializable {
 
 	/**
 	 * Returns the set of roles that this authorizable agent has. It should
@@ -30,6 +31,6 @@ public interface Authorizable {
 	 * 
 	 * @return the set of roles
 	 */
-	public Set<Role> roles();
+	Set<Role> roles();
 
 }
