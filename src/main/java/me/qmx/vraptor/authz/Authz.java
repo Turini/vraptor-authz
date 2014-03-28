@@ -53,7 +53,9 @@ public class Authz {
 	private Result result;
 	private HttpServletRequest request;
 
-	// CDI EYES ONLY
+	/**
+	 * @deprecated cdi eyes only
+	 */
 	protected Authz() {
 
 	}
