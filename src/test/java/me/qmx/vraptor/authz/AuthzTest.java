@@ -155,6 +155,11 @@ public class AuthzTest {
 		Assert.assertFalse(interceptor.accepts(bypassedControllerMethod));
 	}
 
+	@Test(expected=IllegalStateException.class)
+	public void shouldThrowIllegalStateExceptionWheAuthorizableIsNull() throws SecurityException, NoSuchMethodException {
+		interceptor.intercept(null);
+	}
+
 	static class MyPhoto extends CreativeCommonsController {
 		public void newWork() {
 		}
