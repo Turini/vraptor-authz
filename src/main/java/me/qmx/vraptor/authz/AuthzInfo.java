@@ -15,12 +15,14 @@
  */
 package me.qmx.vraptor.authz;
 
+import java.io.Serializable;
+
 import br.com.caelum.vraptor.Result;
 
-public interface AuthzInfo {
+public interface AuthzInfo extends Serializable {
 
-	public Authorizable getAuthorizable();
+	Authorizable getAuthorizable();
 
-	public void handleAuthError(Result result);
+	void handleAuthError(Result result);
 
 }
