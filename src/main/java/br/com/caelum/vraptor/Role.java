@@ -13,24 +13,10 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package me.qmx.vraptor.authz;
+package br.com.caelum.vraptor;
 
 import java.io.Serializable;
-import java.util.Set;
 
-/**
- * Marks agents as authorizables.
- * 
- * @author douglas campos
- */
-public interface Authorizable extends Serializable {
-
-	/**
-	 * Returns the set of roles that this authorizable agent has. It should
-	 * never return null, but an empty set instead.
-	 * 
-	 * @return the set of roles
-	 */
-	Set<Role> roles();
-
+public interface Role extends Serializable {
+	String getName();
 }
