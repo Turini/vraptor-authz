@@ -1,3 +1,4 @@
-## vraptor-authz - a simple authorization plugin for vraptor
+## vraptor-authz
 
-more info coming soon
+A simple authorization plugin for VRaptor 4
+
