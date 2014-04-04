@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package me.qmx.vraptor.authz.annotation;
+package br.com.caelum.vraptor.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

@@ -2,14 +2,14 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>me.qmx.vraptor-authz</groupId>
+	<groupId>br.com.caelum.vraptor</groupId>
 	<artifactId>vraptor-authz</artifactId>
-	<version>0.3-SNAPSHOT</version>
+	<version>4.0.0-RC2-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>vraptor-authz</name>
 	<description>VRaptor authorization plugin</description>
-	<url>https://github.com/qmx/vraptor-authz</url>
+	<url>https://github.com/Turini/vraptor-authz</url>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -30,9 +30,9 @@
 	</licenses>
 
 	<scm>
-		<connection>scm:git:git@github.com:qmx/vraptor-authz.git</connection>
-		<developerConnection>scm:git:git@github.com:qmx/vraptor-authz.git</developerConnection>
-		<url>git@github.com:qmx/vraptor-authz.git</url>
+		<connection>scm:git:git@github.com:Turini/vraptor-authz.git</connection>
+		<developerConnection>scm:git:git@github.com:Turini/vraptor-authz.git</developerConnection>
+		<url>git@github.com:Turini/vraptor-authz.git</url>
 	</scm>
 
 	<developers>
@@ -41,6 +41,15 @@
 			<name>Douglas Campos</name>
 			<url>http://github.com/qmx</url>
 			<email>qmx@qmx.me</email>
+			<roles>
+				<role>Software Developer</role>
+			</roles>
+		</developer>
+		<developer>
+			<id>Turini</id>
+			<name>Rodrigo Turini</name>
+			<url>http://github.com/Turini</url>
+			<email>rodrigo.turini@caelum.com.br</email>
 			<roles>
 				<role>Software Developer</role>
 			</roles>

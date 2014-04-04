@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package me.qmx.vraptor.authz;
+package br.com.caelum.vraptor;
 
 import java.util.EnumSet;
 import java.util.Set;
@@ -27,12 +27,12 @@ import br.com.caelum.vraptor.Accepts;
 import br.com.caelum.vraptor.AroundCall;
 import br.com.caelum.vraptor.Intercepts;
 import br.com.caelum.vraptor.Result;
-import me.qmx.vraptor.authz.annotation.AuthzBypass;
 import br.com.caelum.vraptor.interceptor.SimpleInterceptorStack;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
+import br.com.caelum.vraptor.annotation.AuthzBypass;
 import br.com.caelum.vraptor.controller.HttpMethod;
 import br.com.caelum.vraptor.controller.ControllerMethod;
 

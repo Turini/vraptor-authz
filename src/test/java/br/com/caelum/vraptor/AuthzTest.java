@@ -1,10 +1,5 @@
-package me.qmx.vraptor.authz;
+package br.com.caelum.vraptor;
 
-import me.qmx.vraptor.authz.Authz;
-import me.qmx.vraptor.authz.Authorizator;
-import me.qmx.vraptor.authz.AuthzInfo;
-import me.qmx.vraptor.authz.Role;
-import me.qmx.vraptor.authz.Authorizable;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
@@ -22,10 +17,15 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import br.com.caelum.vraptor.Authorizable;
+import br.com.caelum.vraptor.Authorizator;
+import br.com.caelum.vraptor.Authz;
+import br.com.caelum.vraptor.AuthzInfo;
 import br.com.caelum.vraptor.Result;
-import me.qmx.vraptor.authz.annotation.AuthzBypass;
+import br.com.caelum.vraptor.Role;
 import br.com.caelum.vraptor.interceptor.SimpleInterceptorStack;
 import br.com.caelum.vraptor.http.route.Router;
+import br.com.caelum.vraptor.annotation.AuthzBypass;
 import br.com.caelum.vraptor.controller.DefaultBeanClass;
 import br.com.caelum.vraptor.controller.HttpMethod;
 import br.com.caelum.vraptor.controller.ControllerMethod;

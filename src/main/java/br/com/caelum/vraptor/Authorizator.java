@@ -13,10 +13,15 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package me.qmx.vraptor.authz;
+package br.com.caelum.vraptor;
 
 import java.io.Serializable;
+import java.util.Set;
 
-public interface Role extends Serializable {
-	String getName();
+import br.com.caelum.vraptor.controller.HttpMethod;
+
+public interface Authorizator extends Serializable {
+
+	boolean isAllowed(Role role, String url, Set<HttpMethod> httpMethods);
+
 }
